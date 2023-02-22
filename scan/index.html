@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        EveryEunbin
+        Scan
     </title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,17 +16,17 @@
     <meta name="theme-color" content="#000000">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/css/style.css">
-    <script src="/js/runsw.js"></script>
+    <link rel="stylesheet" href="/css/scan.css">
 </head>
 
 <body>
     <header>
         <nav class="nav">
-            <a href="/" class="nav-link nav-active">
+            <a href="/" class="nav-link">
                 <i class="material-icons nav-icon">home</i>
                 <span class="nav-text">หน้าหลัก</span>
             </a>
-            <a href="/scan" class="nav-link">
+            <a href="/scan" class="nav-link nav-active">
                 <i class="material-icons nav-icon">qr_code_scanner</i>
                 <span class="nav-text">สแกน</span>
             </a>
@@ -41,8 +41,14 @@
         </nav>
     </header>
     <main>
-        <div class="container">
-            <h1>Homepage</h1>
+        <div class="container center">
+            <h2>Scan</h2>
+            <video class="w3-border" id="video" autoplay></video> <br>
+            <button id="start">start</button>
+            <button id="stop">stop</button>
+            <button id="close">close</button>
+            <p id="videoResult"></p>
+            <script src="/js/scan.js"></script>
         </div>
     </main>
     <footer>
