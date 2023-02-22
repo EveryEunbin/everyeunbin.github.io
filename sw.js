@@ -1,10 +1,12 @@
-const CacheVersion = 2;
+const CacheVersion = 1;
 const cacheName = `pwa-v${CacheVersion}`;
 const filesToCache = [
   "/",
   "/css/style.css",
+  "/css/scan.css",
   "/sw.js",
   "/js/runsw.js",
+  "/js/scan.js",
   "/assets/favicon.ico",
   "/assets/favicon-32x32.png",
   "/assets/icon-192.png",

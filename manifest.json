@@ -1,6 +1,6 @@
 {
-	"name": "Simple PWA",
-	"short_name": "Simple pwa",
+	"name": "EveryEunbin",
+	"short_name": "EveryEunbin",
 	"display": "standalone",
 	"scope": "/",
     "start_url": "/?source=homescreen",
