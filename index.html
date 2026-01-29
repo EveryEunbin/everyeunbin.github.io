@@ -4,87 +4,94 @@
     <meta charset="UTF-8">
     <title>เปรียบเทียบราคาชมพู่ 2024 vs 2025</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .container { width: 80%; }
-        h2 { text-align: center; color: #333; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { width: 90%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>เปรียบเทียบราคาชมพู่ (ต่ำ-สูง) ปี 2024 และ 2025</h2>
+    <h2>กราฟเปรียบเทียบราคาชมพู่รายปี (2024 vs 2025)</h2>
     <canvas id="roseAppleChart"></canvas>
 </div>
 
 <script>
-    // ตัวอย่างข้อมูล (คุณสามารถเปลี่ยนเป็นข้อมูลจริงของคุณได้)
-    // เทคนิค: ใช้ "เดือน-วัน" เป็นแกน X เพื่อให้กราฟซ้อนทับกันได้
-    const labels = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    // ฟังก์ชันช่วยจัดการวันที่ให้เหลือแค่ เดือน/วัน
+    function formatMD(dateStr) {
+        const d = new Date(dateStr);
+        return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
 
-    const data2024_Low = [30, 35, 40, 45, 42, 38, 35, 30, 28, 32, 35, 38];
-    const data2024_High = [50, 55, 60, 65, 62, 58, 55, 50, 48, 52, 55, 58];
-    
-    const data2025_Low = [32, 38, 42, 48, 45, 40, 38, 32, 30, 34, 38, 40];
-    const data2025_High = [55, 60, 65, 70, 68, 62, 60, 55, 52, 58, 62, 65];
+    Papa.parse("rose2425.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const rawData = results.data;
+            
+            // แยกข้อมูลตามปี
+            const data2024 = rawData.filter(d => d.date && d.date.startsWith('2024'));
+            const data2025 = rawData.filter(d => d.date && d.date.startsWith('2025'));
 
-    const ctx = document.getElementById('roseAppleChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'ราคาสูง 2025',
-                    data: data2025_High,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3
+            // สร้าง Label แกน X (เอาวันที่ของปีที่มีข้อมูลเยอะกว่าเป็นเกณฑ์)
+            const labels = data2024.map(d => formatMD(d.date));
+
+            const ctx = document.getElementById('roseAppleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '2025 (สูง)',
+                            data: data2025.map(d => d.upper),
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: 1
+                        },
+                        {
+                            label: '2025 (ต่ำ)',
+                            data: data2025.map(d => d.lower),
+                            borderColor: '#e74c3c',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            borderWidth: 1.5,
+                            pointRadius: 0
+                        },
+                        {
+                            label: '2024 (สูง)',
+                            data: data2024.map(d => d.upper),
+                            borderColor: '#3498db',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: 1
+                        },
+                        {
+                            label: '2024 (ต่ำ)',
+                            data: data2024.map(d => d.lower),
+                            borderColor: '#3498db',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            borderWidth: 1.5,
+                            pointRadius: 0
+                        }
+                    ]
                 },
-                {
-                    label: 'ราคาต่ำ 2025',
-                    data: data2025_Low,
-                    borderColor: 'rgba(255, 99, 132, 0.5)',
-                    borderDash: [5, 5],
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3
-                },
-                {
-                    label: 'ราคาสูง 2024',
-                    data: data2024_High,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3
-                },
-                {
-                    label: 'ราคาต่ำ 2024',
-                    data: data2024_Low,
-                    borderColor: 'rgba(54, 162, 235, 0.5)',
-                    borderDash: [5, 5],
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: { title: { display: true, text: 'ราคา (บาท)' } },
+                        x: { title: { display: true, text: 'วัน/เดือน' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: { mode: 'index', intersect: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    title: { display: true, text: 'ราคา (บาท)' }
-                },
-                x: {
-                    title: { display: true, text: 'ช่วงเวลาในรอบปี' }
-                }
-            }
+            });
         }
     });
 </script>
